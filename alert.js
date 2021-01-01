@@ -1,0 +1,1 @@
+window.filterGCLobby = !window.filterGCLobby;
