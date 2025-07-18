@@ -1,0 +1,1 @@
+window.filterActive = !window.filterActive;

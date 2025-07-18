@@ -1,24 +1,24 @@
 {
-  "manifest_version": 2,
-  "name": "gc-filter",
-  "description": "Extensão para GamersClub que filtar lobbies que não é possível entrar.",
+  "manifest_version": 3,
+  "name": "olx-filter",
+  "description": "Extensão para OLX que filtra anúncios do DIEGO.",
   "version": "1.0.0",
   "icons": {
     "256": "icon_256.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["https://*.olx.com.br/*", "https://olx.com.br/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
-      "matches": ["https://*.gamersclub.com.br/*", "https://gamersclub.com.br/*"],
+      "matches": ["https://*.olx.com.br/*", "https://olx.com.br/*"],
       "js": ["content.js"]
     }
-  ],
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  }
+  ]
 }
