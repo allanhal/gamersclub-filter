@@ -6,22 +6,21 @@ function filter() {
 
 // document.getElementById('filter').addEventListener('click', filter);
 document.getElementById('filter-text').addEventListener('click', () => {
-  // if (window.filterActive) {
-  //   window.filterActive = false;
-  // } else {
-  //   window.filterActive = true;
-  // }
-
-  window.filterActive = !window.filterActive;
-
-  console.log('Filter active:', window.filterActive);
-  chrome.tabs.executeScript({
-    file: 'change_filter.js',
+  chrome.storage.local.get(['filterActive'], (result) => {
+    console.log('Current filter state:', result.filterActive);
+    chrome.storage.local.set({ filterActive: !result.textToFilter });
   });
 });
 document.getElementById('add-text').addEventListener('click', addText);
 
-window.filterActive = true;
+const filterActive = true;
+chrome.storage.local.set({ filterActive }, function () {
+  console.log('Filter active state set to:', filterActive);
+});
+
+chrome.storage.local.get(['filterActive'], function ({ filterActive }) {
+  console.log('Settings retrieved filterActive', filterActive);
+});
 
 var textToFilter = [
   '9 8 7 4 8 3 1 0 8',
@@ -34,6 +33,11 @@ var textToFilter = [
   'Carvalho9989F',
 ];
 
+chrome.storage.local.set({ textToFilter });
+chrome.storage.local.get(['textToFilter'], function ({ textToFilter }) {
+  console.log('Settings retrieved textToFilter', textToFilter);
+});
+
 textToFilter.forEach((text) => {
   addText(text);
 });
@@ -42,7 +46,6 @@ function addText(text) {
   if (!text) {
     text = prompt('Digite o texto:');
   }
-  // console.log('Texto adicionado:', text);
   if (text) {
     const newDiv = document.createElement('div');
     const newLi = `
@@ -70,16 +73,13 @@ function addText(text) {
     `;
     newDiv.innerHTML = newLi;
     document.querySelector('#text-list').appendChild(newDiv);
-    // document.querySelector('#text-list div').appendChild(newDiv);
     document.getElementById(`remove-text-${text}`).addEventListener('click', () => {
-      // remove(`remove-text-${text}`);
       document.getElementById(`remove-text-${text}`).parentElement.parentElement.remove();
-      // console.log(`Item with text "${text}" removed.`);
       textToFilter = textToFilter.filter((item) => item !== text);
-      // console.log('Texto removido do array:', textToFilter);
+      chrome.storage.local.set({ textToFilter });
     });
 
     textToFilter.push(text);
-    // console.log('Texto adicionado ao array:', textToFilter);
+    chrome.storage.local.set({ textToFilter });
   }
 }
